@@ -35,7 +35,7 @@ class DarkSkyWeather:
             self.params = {}
 
     def current(self, city_name):
-        assert self.city_map[city_name]
+        self.__check_city(city_name)
         api_key = self.api_key
         params = {'exclude': 'currently,minutely,hourly'}
         coordinates = self.city_map[city_name]
