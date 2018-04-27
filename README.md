@@ -5,7 +5,7 @@
 # create env variables for APP and DATABASE
 ```
 $ export FLASK_APP=app.py
-$ export DATABASE_URL="postgresql://user:password@localhost:5432/flask_test"
+$ export DATABASE_URL="postgresql://serg:1789@localhost:5432/flask_server"
 ```
 
 # apply initial migrations

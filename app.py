@@ -5,6 +5,9 @@ from flask_login import LoginManager
 from flask_login import login_required
 from flask_login import login_user
 from flask_sqlalchemy import SQLAlchemy
+from dark_sky_api import DarkSky
+import json
+import requests
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
@@ -67,3 +70,24 @@ def load_user(user_id):
 def logout():
     logout_user()
     return "user logout"
+
+
+@app.route('/weather/odessa/')
+def dark_sky():
+
+    url = 'https://api.darksky.net/forecast/1f59ae2ad5dbb81ba6fea2a20c2f5db5/46.490865,30.7373526'
+    params = {'exclude':'currently,minutely,hourly'}
+    response = requests.get(url, params=params)
+    response_content = json.loads(response.content)
+    return json.dumps(response_content)
+
+
+@app.route('/weather/')
+def dark_sky_new():
+    city = request.args.get('city')
+    params = request.args.get('params')
+    weather = DarkSky()
+    weather.set_api_key('1f59ae2ad5dbb81ba6fea2a20c2f5db5')
+    weather.set_api_params(params)
+    weather.set_locate(city)
+    return weather.get_response()
