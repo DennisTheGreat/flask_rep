@@ -82,7 +82,7 @@ def dark_sky():
     return json.dumps(response_content)
 
 
-@app.route('/weather/')
+@app.route('/w/')
 def dark_sky_new():
     city = request.args.get('city')
     params = request.args.get('params')

@@ -1,5 +1,5 @@
 import requests
-
+import json
 
 class DarkSky:
     api_url = 'https://api.darksky.net/forecast/{api_key}/{coordinates}'
@@ -38,10 +38,10 @@ class DarkSky:
 
     def set_locate(self, locate):
         if locate in self.coordinates_dict.keys():
-            self.coordinates = self.coordinates_dict.get(locate)
+            self.coordinates = f'{self.coordinates_dict.get(locate)[0]},{self.coordinates_dict.get(locate)[1]}'
 
-        if isinstance(locate, str):
-            self.coordinates = locate
+        if isinstance(locate, tuple):
+            self.coordinates = f'{locate[0]},{locate[1]}'
 
     def get_response(self):
         if self.api_key is None:
@@ -53,6 +53,7 @@ class DarkSky:
         if self.coordinates is None:
             raise ImportError('U should match a locate')
 
-        self.url = self.api_url.format(api_key=self.api_key, coordinates=self.coordinates)
+        self.url = f'https://api.darksky.net/forecast/{self.api_key}/{self.coordinates}'
         response = requests.get(self.url, params=self.params)
-        return response
+        response_content = json.loads(response.content)
+        return json.dumps(response_content)
