@@ -11,7 +11,7 @@ import requests
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
-app.secret_key = 'xxxxyyyyyzzzzz'
+app.secret_key = '1f59ae2ad5dbb81ba6fea2a20c2f5db5'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -72,22 +72,15 @@ def logout():
     return "user logout"
 
 
-@app.route('/weather/odessa/')
-def dark_sky():
-
-    url = 'https://api.darksky.net/forecast/1f59ae2ad5dbb81ba6fea2a20c2f5db5/46.490865,30.7373526'
-    params = {'exclude':'currently,minutely,hourly'}
-    response = requests.get(url, params=params)
-    response_content = json.loads(response.content)
-    return json.dumps(response_content)
-
-
 @app.route('/w/')
+@login_required
 def dark_sky_new():
     city = request.args.get('city')
     params = request.args.get('params')
+    units = request.args.get('units')
     weather = DarkSky()
-    weather.set_api_key('1f59ae2ad5dbb81ba6fea2a20c2f5db5')
+    weather.set_api_key(app.secret_key)
     weather.set_api_params(params)
     weather.set_locate(city)
+    weather.set_units(units)
     return weather.get_response()
