@@ -63,6 +63,11 @@ def load_user(user_id):
     return Users.query.filter_by(id=user_id).first()
 
 
+@login_manager.unauthorized_handler
+def unauthorized():
+    return 'Error (unauthorized) '
+
+
 @app.route("/logout")
 @login_required
 def logout():
