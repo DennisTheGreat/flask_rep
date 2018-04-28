@@ -6,8 +6,6 @@ from flask_login import login_required
 from flask_login import login_user
 from flask_sqlalchemy import SQLAlchemy
 from dark_sky_api import DarkSky
-import json
-import requests
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
