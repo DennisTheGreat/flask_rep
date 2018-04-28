@@ -44,7 +44,7 @@ def create_user_view():
     return "found user {}".format(user.user_email)
 
 
-@app.route('/login')
+@app.route('/login/')
 def login():
     email = request.args.get('user_email')
     user = Users.query.filter_by(user_email=email).first()
@@ -54,7 +54,7 @@ def login():
     return "User logged in"
 
 
-@app.route("/user_profile")
+@app.route("/user_profile/")
 @login_required
 def settings():
     return "User profile page"

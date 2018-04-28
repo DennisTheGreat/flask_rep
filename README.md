@@ -1,6 +1,6 @@
 # flask_rep
 
-# create database "flask_test"
+# create database "flask_server"
 
 # create env variables for APP and DATABASE
 ```
