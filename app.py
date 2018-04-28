@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from dark_sky_api import DarkSky
 from utils import login_required
 from flask import session
+from flask import redirect
 
 
 app = Flask(__name__)
@@ -31,22 +32,25 @@ def hello_world(id):
 @app.route('/users/create/')
 def create_user_view():
     email = request.args.get('user_email')
-    name = request.args.get('name')
-    user = Users.query.filter_by(user_email=email).first()
+    name = request.args.get('user_name')
+    password = request.args.get('user_password')
+    user = Users.query.filter_by(user_email=email, password=password).first()
     if not user:
-        created_user = Users(user_email=email, user_name=name)
+        created_user = Users(user_email=email, user_name=name, password=password)
         db.session.add(created_user)
         db.session.commit()
-        return "test user {} created".format(created_user.user_email)
+        return redirect(login)
     return "found user {} {}".format(user.user_email, user.user_name)
 
 
 @app.route('/login/')
 def login():
+
     email = request.args.get('user_email')
-    user = Users.query.filter_by(user_email=email).first()
+    password = request.args.get('user_password')
+    user = Users.query.filter_by(user_email=email, password=password).first()
     if not user:
-        return "no such user"
+        return "Wrong email or pass"
     session['logged_in'] = True
     return "Login {} {}".format(user.user_email, user.user_name)
 
@@ -62,11 +66,6 @@ def settings():
 def logout():
     session['logged_in'] = False
     return "user logout"
-
-
-@app.route('/test_perms')
-def login_required():
-    return 'Authorized'
 
 
 @app.route('/w/')

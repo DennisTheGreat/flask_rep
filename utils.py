@@ -8,6 +8,6 @@ def login_required(session):
         def decorated_view(*args, **kwargs):
             if session.get('logged_in'):
                 return func(*args, **kwargs)
-            return abort(404)
+            return abort(403)
         return decorated_view
     return deco
