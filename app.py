@@ -15,6 +15,7 @@ app.secret_key = 'xxxxyyyyyzzzzz'
 
 if not db:
     raise SystemExit('DB not loaded')
+
 from config import DevelopmentConfig
 from models import Users
 
@@ -33,27 +34,36 @@ def hello_world(id):
     return render_template('template.html', user=user)
 
 
-@app.route('/users/create/')
+@app.route('/users/create/', methods=['GET', 'POST'])
 def create_user_view():
-    email = request.args.get('user_email')
-    user = Users.query.filter_by(user_email=email).first()
-    if not user:
-        created_user = Users(user_email=email)
-        db.session.add(created_user)
-        db.session.commit()
-        return "test user {} created".format(created_user.user_email)
-    return "found user {}".format(user.user_email)
+    error = None
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        user_email = request.form.get('user_email')
+
+        if all([username, password, user_email]):
+            new_user = Users(username=username,
+                             password=password,
+                             user_email=user_email)
+            db.session.add(new_user)
+            db.session.commit()
+            return redirect('login')
+        else:
+            error = 'Fill all data'
+    return render_template('register.html', error=error)
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
     if request.method == 'POST':
-        email = request.form.get('username')
-        # password = request.form.get('password')
-        user = Users.query.filter_by(user_email=email).first()
+        email = request.form.get('email')
+        password = request.form.get('password')
+        user = Users.query.filter_by(user_email=email,
+                                     password=password).first()
         if not user:
-            error = 'email'
+            error = 'email or password wrong'
         else:
             session['logged_in'] = True
             flash('You were logged in')
