@@ -5,19 +5,13 @@ from flask import render_template
 from flask import request
 from flask import session
 from flask import url_for
-from flask_login import LoginManager
-from flask_login import login_required
-from flask_login import login_user
-from flask_login import logout_user
 from flask_sqlalchemy import SQLAlchemy
+
+from utils import login_required
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
 app.secret_key = 'xxxxyyyyyzzzzz'
-
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
 
 if not db:
     raise SystemExit('DB not loaded')
@@ -62,27 +56,19 @@ def login():
             error = 'email'
         else:
             session['logged_in'] = True
-            login_user(user)
             flash('You were logged in')
             return redirect(url_for('hello_world', **{'id': user.id}))
     return render_template('login.html', error=error)
 
 
-@app.route("/user_profile")
-@login_required
-def settings():
-    return "User profile page"
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    return Users.query.filter_by(id=user_id).first()
-
-
 @app.route("/logout")
-@login_required
 def logout():
     session['logged_in'] = False
-    flash('You were logged in')
-    logout_user()
+    flash('You were logged out')
     return "user logout"
+
+
+@app.route('/test_perm')
+@login_required(session)
+def test_view():
+    return 'Authorized'
