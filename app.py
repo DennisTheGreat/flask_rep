@@ -1,20 +1,15 @@
 from flask import Flask
 from flask import request
-from flask_login import logout_user
-from flask_login import LoginManager
-from flask_login import login_required
-from flask_login import login_user
 from flask_sqlalchemy import SQLAlchemy
 from dark_sky_api import DarkSky
+from utils import login_required
+from flask import session
 
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
 app.secret_key = 'xxxxyyyyzzzz'
 
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
 
 if not db:
     raise SystemExit('DB not loaded')
@@ -30,7 +25,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 def hello_world(id):
     from flask import render_template
     user = Users.query.get(id)
-    return render_template('index.html')
+    return render_template('index.html', user=user)
 
 
 @app.route('/users/create/')
@@ -52,35 +47,30 @@ def login():
     user = Users.query.filter_by(user_email=email).first()
     if not user:
         return "no such user"
-    login_user(user)
+    session['logged_in'] = True
     return "Login {} {}".format(user.user_email, user.user_name)
 
 
 @app.route("/user_profile/")
-@login_required
+@login_required(session)
 def settings():
     return "User profile page"
 
 
-@login_manager.user_loader
-def load_user(user_id):
-    return Users.query.filter_by(id=user_id).first()
-
-
-@login_manager.unauthorized_handler
-def unauthorized():
-    return 'Error (unauthorized) '
-
-
 @app.route("/logout")
-@login_required
+@login_required(session)
 def logout():
-    logout_user()
+    session['logged_in'] = False
     return "user logout"
 
 
+@app.route('/test_perms')
+def login_required():
+    return 'Authorized'
+
+
 @app.route('/w/')
-@login_required
+@login_required(session)
 def dark_sky_new():
     city = request.args.get('city')
     params = request.args.get('params')
