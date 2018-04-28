@@ -15,7 +15,8 @@ $ python manage.py db migrate
 $ python manage.py db upgrade
 ```
 
-#run flask
+# run flask
+
 ```
 flask run
 ```
