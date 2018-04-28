@@ -1,0 +1,6 @@
+.idea*
+__pycache__/
+.idea/
+.DS_Store
+/migrations
+feature/flask_server
