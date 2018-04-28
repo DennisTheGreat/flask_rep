@@ -3,6 +3,7 @@ from flask import request
 from dark_sky_api import DarkSky
 from utils import login_required
 from flask import session
+from models import Users
 
 
 @app.route('/w/')

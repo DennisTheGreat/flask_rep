@@ -1,10 +1,10 @@
 from app import app
+from app import db
 from flask import request
 from flask import redirect
 from flask import session
 from utils import login_required
 from models import Users
-from app import db
 
 
 @app.route('/users/create/')

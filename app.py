@@ -5,7 +5,6 @@ from config import DevelopmentConfig
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
-from models import Users
 from profile import logout
 from weather_forecast import dark_sky_new
 if not db:
