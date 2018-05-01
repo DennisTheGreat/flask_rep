@@ -1,5 +1,5 @@
 from functools import wraps
-from werkzeug.exceptions import abort
+from flask import abort
 
 
 def login_required(session):

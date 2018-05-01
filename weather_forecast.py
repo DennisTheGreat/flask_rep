@@ -1,12 +1,12 @@
-from app import app
 from flask import request
 from dark_sky_api import DarkSky
 from utils import login_required
 from flask import session
-from models import Users
+from flask import Blueprint
+dark_sky = Blueprint('simple_page', __name__)
 
 
-@app.route('/w/')
+@dark_sky.route('/w/')
 @login_required(session)
 def dark_sky_new():
     city = request.args.get('city')

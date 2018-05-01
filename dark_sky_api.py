@@ -2,6 +2,7 @@ import requests
 import json
 from datetime import datetime
 
+
 class DarkSky:
     api_url = 'https://api.darksky.net/forecast/{api_key}/{coordinates}'
     api_key = None

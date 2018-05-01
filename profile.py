@@ -1,14 +1,15 @@
-from app import app
-from app import db
 from flask import request
 from flask import redirect
 from flask import session
 from flask import render_template
 from utils import login_required
+from flask import Blueprint
+from app import db
 from models import Users
+profile_sys = Blueprint('profile_sys', __name__, template_folder='templates')
 
 
-@app.route('/users/create/', methods=['GET', 'POST'])
+@profile_sys.route('/users/create/', methods=['GET', 'POST'])
 def create_user_view():
     error = None
     if request.method == 'POST':
@@ -33,7 +34,7 @@ def create_user_view():
     return render_template('register.html', error=error)
 
 
-@app.route('/login/')
+@profile_sys.route('/login/')
 def login():
     error = None
     email = request.args.get('user_email')
@@ -46,13 +47,13 @@ def login():
     return render_template('login.html', error=error)
 
 
-@app.route("/user_profile/")
+@profile_sys.route("/user_profile/")
 @login_required(session)
 def settings():
     return "User profile page"
 
 
-@app.route("/logout")
+@profile_sys.route("/logout")
 @login_required(session)
 def logout():
     session['logged_in'] = False
